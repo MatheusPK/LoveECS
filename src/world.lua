@@ -99,7 +99,7 @@ end
 
 function world:manageArchetype(entity)
     local entityArchetypePattern = table.concat(entity.archetype, '|')
-    for archetype in ipairs(self.archetypes) do
+    for _, archetype in ipairs(self.archetypes) do
         if utils:matchArchetypePattern(entityArchetypePattern, archetype) then
             local archetypeTable = self.archetypes[archetype]
             table.insert(archetypeTable, entity.components)
