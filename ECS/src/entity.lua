@@ -1,4 +1,4 @@
-local utils = require('utils')
+local utils = require('src.utils')
 
 local entity = {
     components = {},
@@ -14,7 +14,7 @@ end
 
 function entity:addComponent(component)
     self.components[component.type] = component
-    self:addType(component)
+    self:addType(component.type)
 end
 
 function entity:updateComponent(componentType, newValue)

@@ -1,4 +1,4 @@
-local utils = require('utils')
+local utils = require('src.utils')
 
 local world = {
     entities = {},
@@ -8,6 +8,7 @@ local world = {
     systems = {},
     systemsToAdd = {},
     systemsToRemove = {},
+    drawSystem = nil,
     archetypes = {}
 }
 
@@ -17,7 +18,6 @@ function world:new(o)
     self.__index = self
     return o
 end
-
 
 -- MARK: - Entities Management
 function world:addEntity(entity)
@@ -51,13 +51,17 @@ function world:manageEntities()
 end
 
 -- MARK: - Systems Management
+function world:setDrawSystem(system)
+    self.drawSystem = system
+    self:registerArchetype(system.archetype)
+end
 
 function world:addSystem(system)
-    table.insert(self.systems, system)
+    table.insert(self.systemsToAdd, system)
 end
 
 function world:removeSystem(system)
-    table.insert(self.systems, system)
+    table.insert(self.systemsToRemove, system)
 end
 
 function world:manageSystems()
@@ -83,21 +87,25 @@ function world:manageSystems()
 end
 
 -- MARK: - World Life Cycle
-
 function world:load() end
 
 function world:update(dt)
-    self:manageEntities()
     self:manageSystems()
+    self:manageEntities()
 
-    for system in ipairs(self.systems) do
-        system:update()
+    for _, system in ipairs(self.systems) do
+        system:update(dt)
     end
 end
 
--- MARK: - Private Functions
+function world:draw()
+    if self.drawSystem == nil then return end
+    self.drawSystem:update()
+end
 
+-- MARK: - Private Functions
 function world:manageArchetype(entity)
+    table.sort(entity.archetype)
     local entityArchetypePattern = table.concat(entity.archetype, '|')
     for _, archetype in ipairs(self.archetypes) do
         if utils:matchArchetypePattern(entityArchetypePattern, archetype) then

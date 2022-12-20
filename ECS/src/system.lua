@@ -4,7 +4,7 @@ local system = {
 }
 --[[
 Creates new system
--> archetype = Set of componentes. ex: {"POSITION", "VELOCITY", "HEALTH"}
+-> archetype = Set of componentes. ex: {COMPONENTS.TRANSLATION, COMPONENTS.COLLIDER}
 ]]
 function system:new(world, archetype)
     local o = {}
@@ -19,15 +19,16 @@ end
 function system:onAdd() end
 
 function system:update(dt)
-    local components = self:getComponents()
-    self:process(dt, components)
+    local componentSet = self:getComponentSet()
+    if componentSet == nil then return end
+    self:process(dt, componentSet)
 end
 
-function system:process(dt, components) end
+function system:process(dt, componentSet) end
 
 function system:onRemove() end
 
-function system:getComponents()
+function system:getComponentSet()
     local archetypePattern = table.concat(self.archetype, "|")
     return self.world.archetypes[archetypePattern]
 end
