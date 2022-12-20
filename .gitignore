@@ -42,3 +42,4 @@ luac.out
 # Mac OS
 **/.DS_Store
 
+*.json
