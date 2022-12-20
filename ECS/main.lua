@@ -4,6 +4,9 @@ require('example.shared.imports')
 
 function love.load()
     World:addEntity(Player)
+    World:addEntity(Player2)
+    World:addSystem(InputSystem)
+    World:addSystem(InputMovementSystem)
     World:setDrawSystem(DrawSystem)
 end
 

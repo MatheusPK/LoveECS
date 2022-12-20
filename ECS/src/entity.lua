@@ -1,14 +1,16 @@
 local utils = require('src.utils')
 
 local entity = {
-    components = {},
-    archetype = {}
+    components = nil,
+    archetype = nil
 }
 
 function entity:new(o)
     o = o or {}
     setmetatable(o, self)
     self.__index = self
+    o.components = {}
+    o.archetype = {}
     return o
 end
 
