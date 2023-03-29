@@ -1,44 +1,42 @@
-local utils = require('src.utils')
+local path = string.match(..., "(.*%.).*$")
+local utils = require(path .. 'utils')
+local class = require(path .. 'class')
 
-local entity = {
-    components = nil,
-    archetype = nil
-}
+Entity = class('Entity')
 
-function entity:new(o)
-    o = o or {}
-    setmetatable(o, self)
-    self.__index = self
-    o.components = {}
-    o.archetype = {}
-    return o
+function Entity:init()
+    self.components = {}
+    self.archetype = {}
 end
 
-function entity:addComponent(component)
+function Entity:onAdd() --[[ implement some logic ]] end
+function Entity:onRemove() --[[ implement some logic ]] end
+
+function Entity:addComponent(component)
     self.components[component.type] = component
     self:addType(component.type)
 end
 
-function entity:updateComponent(componentType, newValue)
+function Entity:updateComponent(componentType, newValue)
     self.components[componentType].value = newValue
 end
 
-function entity:removeComponent(componentType)
+function Entity:removeComponent(componentType)
     self.components[componentType] = nil
     self:removeType(componentType)
 end
 
-function entity:getComponent(componentType)
+function Entity:getComponent(componentType)
     return self.components[componentType]
 end
 
 -- MARK: - Private Functions
-function entity:addType(componentType)
+function Entity:addType(componentType)
     table.insert(self.archetype, componentType)
     self.archetype[componentType] = #self.archetype
 end
 
-function entity:removeType(componentType)
+function Entity:removeType(componentType)
     local lastTypeIndex = #self.archetype
     local lastType = self.archetype[lastTypeIndex]
     local typeToRemove = self.archetype[componentType]
@@ -46,4 +44,4 @@ function entity:removeType(componentType)
     table.remove(self.archetype, lastTypeIndex)
 end
 
-return entity
+return Entity
